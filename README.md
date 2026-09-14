@@ -21,6 +21,8 @@
 
 ## 网页版
 
+**在线直接用：<https://errrc.github.io/fastxiaoliuren/>**（手机浏览器打开也可以，可「添加到主屏幕」当应用用）
+
 代码就是一堆静态文件，`index.html` 双击即可运行，也可以丢到任意静态托管：
 
 ```bash
@@ -29,7 +31,7 @@ npx serve .
 ```
 
 仓库带了 GitHub Pages 工作流（`.github/workflows/pages.yml`）：在仓库 Settings → Pages 把 Source 选成
-**GitHub Actions**，之后每次 push 到 `main` 都会自动更新在线网页版。
+**GitHub Actions**，之后每次 push 到 `main` 都会自动更新在线网页版（本仓库已开启）。
 
 ## 功能
 
