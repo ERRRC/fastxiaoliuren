@@ -3,6 +3,13 @@
 离线可用的小六壬（诸葛马前课）工具：**选事类 → 起课 → 出断语**，附完整教学与 269 题题库。
 纯前端实现，无框架、无后端、不联网、无广告，提供 Android APK 与网页两种用法。
 
+<p align="center">
+  <img src="docs/screenshots/00-home.png" width="200" alt="起课">
+  <img src="docs/screenshots/01-qike-result.png" width="200" alt="断语结果">
+  <img src="docs/screenshots/02-learn.png" width="200" alt="学习">
+  <img src="docs/screenshots/03-ref.png" width="200" alt="速查卡">
+</p>
+
 > 断语全部摘自传统小六壬通行本并可溯源，属民俗文化内容，**不构成对任何具体事项的预测或决策建议**。
 > 疾病 / 投资 / 法律三类事类会强制显示对应提示，且不可关闭。详见下方[免责声明](#免责声明)。
 
