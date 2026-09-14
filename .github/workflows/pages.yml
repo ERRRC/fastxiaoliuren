@@ -41,6 +41,10 @@ jobs:
         run: node sync-www.js
 
       - uses: actions/configure-pages@v5
+        with:
+          # 仓库尚未开启 Pages 时自动开启（否则这一步会直接报
+          # "Get Pages site failed ... Not Found" 并让整个 workflow 变红、给仓库主发失败邮件）
+          enablement: true
 
       - uses: actions/upload-pages-artifact@v3
         with:
