@@ -1,0 +1,548 @@
+[
+  {
+    "id": "c0-0001",
+    "type": "single",
+    "chapter": "时辰历法",
+    "tags": [
+      "时辰对照"
+    ],
+    "difficulty": 1,
+    "listKind": "shichen",
+    "listHi": "卯时",
+    "stem": "早上 6 点整，对应十二时辰里的哪个时辰？",
+    "options": [
+      "卯时",
+      "辰时",
+      "寅时",
+      "巳时"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "卯时＝05:00–07:00，早上 6 点正在其中。记住「卯时日出」——天亮前后就是卯时。",
+    "source": "时辰通行对照"
+  },
+  {
+    "id": "c0-0002",
+    "type": "single",
+    "chapter": "时辰历法",
+    "tags": [
+      "时辰对照"
+    ],
+    "difficulty": 1,
+    "listKind": "shichen",
+    "listHi": "子时",
+    "stem": "晚上 11 点（23:00）是哪个时辰？",
+    "options": [
+      "子时",
+      "亥时",
+      "丑时",
+      "戌时"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "子时＝23:00–01:00，是一天的开始。熬夜到 23 点后，掐算时辰就要用子时了。",
+    "source": "时辰通行对照"
+  },
+  {
+    "id": "c0-0003",
+    "type": "single",
+    "chapter": "时辰历法",
+    "tags": [
+      "时辰对照"
+    ],
+    "difficulty": 1,
+    "listKind": "shichen",
+    "listHi": "午时",
+    "stem": "中午 12 点是哪个时辰？",
+    "options": [
+      "午时",
+      "巳时",
+      "未时",
+      "辰时"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "午时＝11:00–13:00，正午 12 点正在午时正中（古称「日中」）。",
+    "source": "时辰通行对照"
+  },
+  {
+    "id": "c0-0004",
+    "type": "single",
+    "chapter": "时辰历法",
+    "tags": [
+      "时辰对照",
+      "边界"
+    ],
+    "difficulty": 2,
+    "listKind": "shichen",
+    "listHi": "申时",
+    "stem": "下午 3 点整（15:00），时辰上属于？",
+    "options": [
+      "申时",
+      "未时",
+      "酉时",
+      "午时"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "未时到 15:00 结束，15:00 整起入申时（15:00–17:00）。边界整点算下一个时辰的开始。",
+    "source": "时辰通行对照"
+  },
+  {
+    "id": "c0-0005",
+    "type": "single",
+    "chapter": "时辰历法",
+    "tags": [
+      "时辰对照"
+    ],
+    "difficulty": 1,
+    "listKind": "shichen",
+    "listHi": "辰时",
+    "stem": "上午 8 点是哪个时辰？",
+    "options": [
+      "辰时",
+      "卯时",
+      "巳时",
+      "午时"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "辰时＝07:00–09:00，正是吃早饭上班的时段（古称「食时」）。",
+    "source": "时辰通行对照"
+  },
+  {
+    "id": "c0-0006",
+    "type": "single",
+    "chapter": "时辰历法",
+    "tags": [
+      "时辰对照"
+    ],
+    "difficulty": 1,
+    "listKind": "shichen",
+    "listHi": "酉时",
+    "stem": "傍晚 6 点（18:00）是哪个时辰？",
+    "options": [
+      "酉时",
+      "申时",
+      "戌时",
+      "未时"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "酉时＝17:00–19:00，太阳落山的时段（古称「日入」）。",
+    "source": "时辰通行对照"
+  },
+  {
+    "id": "c0-0007",
+    "type": "single",
+    "chapter": "时辰历法",
+    "tags": [
+      "时辰对照"
+    ],
+    "difficulty": 1,
+    "listKind": "shichen",
+    "listHi": "亥时",
+    "stem": "晚上 9 点（21:00）是哪个时辰？",
+    "options": [
+      "亥时",
+      "戌时",
+      "子时",
+      "酉时"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "亥时＝21:00–23:00，古称「人定」——该安歇了。",
+    "source": "时辰通行对照"
+  },
+  {
+    "id": "c0-0008",
+    "type": "single",
+    "chapter": "时辰历法",
+    "tags": [
+      "时辰对照"
+    ],
+    "difficulty": 1,
+    "listKind": "shichen",
+    "listHi": "丑时",
+    "stem": "凌晨 2 点是哪个时辰？",
+    "options": [
+      "丑时",
+      "寅时",
+      "子时",
+      "卯时"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "丑时＝01:00–03:00，古称「鸡鸣」。",
+    "source": "时辰通行对照"
+  },
+  {
+    "id": "c0-0009",
+    "type": "single",
+    "chapter": "时辰历法",
+    "tags": [
+      "时辰对照"
+    ],
+    "difficulty": 1,
+    "listKind": "shichen",
+    "listHi": "寅时",
+    "stem": "凌晨 4 点是哪个时辰？",
+    "options": [
+      "寅时",
+      "丑时",
+      "卯时",
+      "子时"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "寅时＝03:00–05:00，古称「平旦」，天将亮未亮。",
+    "source": "时辰通行对照"
+  },
+  {
+    "id": "c0-0010",
+    "type": "single",
+    "chapter": "时辰历法",
+    "tags": [
+      "时辰对照"
+    ],
+    "difficulty": 1,
+    "listKind": "shichen",
+    "listHi": "巳时",
+    "stem": "上午 10 点是哪个时辰？",
+    "options": [
+      "巳时",
+      "辰时",
+      "午时",
+      "未时"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "巳时＝09:00–11:00，正是上午工作时段（古称「隅中」）。",
+    "source": "时辰通行对照"
+  },
+  {
+    "id": "c0-0011",
+    "type": "single",
+    "chapter": "时辰历法",
+    "tags": [
+      "时辰对照"
+    ],
+    "difficulty": 1,
+    "listKind": "shichen",
+    "listHi": "未时",
+    "stem": "下午 2 点（14:00）是哪个时辰？",
+    "options": [
+      "未时",
+      "午时",
+      "申时",
+      "酉时"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "未时＝13:00–15:00，午后犯困的时段（古称「日昳」）。",
+    "source": "时辰通行对照"
+  },
+  {
+    "id": "c0-0012",
+    "type": "single",
+    "chapter": "时辰历法",
+    "tags": [
+      "时辰对照"
+    ],
+    "difficulty": 1,
+    "listKind": "shichen",
+    "listHi": "戌时",
+    "stem": "晚上 8 点（20:00）是哪个时辰？",
+    "options": [
+      "戌时",
+      "酉时",
+      "亥时",
+      "申时"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "戌时＝19:00–21:00，古称「黄昏」，晚间黄金档。",
+    "source": "时辰通行对照"
+  },
+  {
+    "id": "c0-0013",
+    "type": "single",
+    "chapter": "时辰历法",
+    "tags": [
+      "时辰对照",
+      "边界"
+    ],
+    "difficulty": 2,
+    "listKind": "shichen",
+    "listHi": "辰时",
+    "stem": "早上 7 点整，时辰上属于？",
+    "options": [
+      "辰时",
+      "卯时",
+      "寅时",
+      "巳时"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "卯时到 07:00 结束，7 点整起入辰时。整点边界归后一个时辰。",
+    "source": "时辰通行对照"
+  },
+  {
+    "id": "c0-0014",
+    "type": "single",
+    "chapter": "时辰历法",
+    "tags": [
+      "时辰别称"
+    ],
+    "difficulty": 2,
+    "listKind": "shichen",
+    "listHi": "午时",
+    "stem": "古人说的「日中」对应哪个时辰？",
+    "options": [
+      "午时",
+      "巳时",
+      "未时",
+      "辰时"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "日中＝太阳正中＝午时（11:00–13:00）。",
+    "source": "时辰通行对照"
+  },
+  {
+    "id": "c0-0015",
+    "type": "single",
+    "chapter": "时辰历法",
+    "tags": [
+      "时辰别称"
+    ],
+    "difficulty": 2,
+    "listKind": "shichen",
+    "listHi": "子时",
+    "stem": "「夜半」对应哪个时辰？",
+    "options": [
+      "子时",
+      "亥时",
+      "丑时",
+      "戌时"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "夜半＝子时（23:00–01:00）。张继诗「夜半钟声到客船」写的就是子时前后。",
+    "source": "时辰通行对照"
+  },
+  {
+    "id": "c0-0016",
+    "type": "single",
+    "chapter": "时辰历法",
+    "tags": [
+      "时辰别称"
+    ],
+    "difficulty": 2,
+    "listKind": "shichen",
+    "listHi": "戌时",
+    "stem": "「黄昏」作为时辰名，对应？",
+    "options": [
+      "戌时",
+      "酉时",
+      "亥时",
+      "申时"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "黄昏＝戌时（19:00–21:00）。注意：现代口语的「傍晚」更接近酉时。",
+    "source": "时辰通行对照"
+  },
+  {
+    "id": "c0-0017",
+    "type": "single",
+    "chapter": "时辰历法",
+    "tags": [
+      "时辰别称"
+    ],
+    "difficulty": 2,
+    "listKind": "shichen",
+    "listHi": "亥时",
+    "stem": "「人定」对应哪个时辰？",
+    "options": [
+      "亥时",
+      "戌时",
+      "子时",
+      "丑时"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "人定＝亥时（21:00–23:00），意为人事已定、该入睡了。",
+    "source": "时辰通行对照"
+  },
+  {
+    "id": "c0-0018",
+    "type": "single",
+    "chapter": "时辰历法",
+    "tags": [
+      "生肖"
+    ],
+    "difficulty": 1,
+    "listKind": "zhi",
+    "listHi": "卯兔",
+    "stem": "十二地支与生肖相配，「卯」对应哪种动物？",
+    "options": [
+      "兔",
+      "龙",
+      "虎",
+      "鸡"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "卯对应兔——卯时日出，传说玉兔捣药迎晨光。",
+    "source": "生肖通行配属"
+  },
+  {
+    "id": "c0-0019",
+    "type": "single",
+    "chapter": "时辰历法",
+    "tags": [
+      "生肖"
+    ],
+    "difficulty": 1,
+    "listKind": "zhi",
+    "listHi": "酉鸡",
+    "stem": "「酉」对应的生肖是？",
+    "options": [
+      "鸡",
+      "狗",
+      "猴",
+      "羊"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "酉时日入，鸡上架归巢，故酉属鸡。",
+    "source": "生肖通行配属"
+  },
+  {
+    "id": "c0-0020",
+    "type": "single",
+    "chapter": "时辰历法",
+    "tags": [
+      "历法"
+    ],
+    "difficulty": 1,
+    "stem": "小六壬掐算用的「月」和「日」，按哪种历法？",
+    "options": [
+      "农历",
+      "公历",
+      "干支历",
+      "儒略历"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "小六壬以农历月、农历日加时辰起算。手机日历大多同时显示农历，掐算前先查一眼。",
+    "source": "诸葛马前课通行本"
+  },
+  {
+    "id": "c0-0021",
+    "type": "judge",
+    "chapter": "时辰历法",
+    "tags": [
+      "历法",
+      "闰月"
+    ],
+    "difficulty": 2,
+    "stem": "遇到农历闰月时，掐算把闰月当作本月来数（如闰六月仍按六月数）。",
+    "options": [
+      "正确",
+      "错误"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "通行做法：闰月按本月数，不另起一号。【闰月是什么】农历以月亮圆缺定月（一个月约 29.5 天），一年 12 个月约 354 天，比回归年（约 365 天）少 11 天；为不让季节错位，约每 2–3 年补插一个「闰月」，如「闰六月」就是六月之后多出的一个月。掐算遇到闰月，仍按它挂靠的月份数即可。",
+    "source": "诸葛马前课通行本"
+  },
+  {
+    "id": "c0-0022",
+    "type": "single",
+    "chapter": "时辰历法",
+    "tags": [
+      "历法"
+    ],
+    "difficulty": 1,
+    "stem": "一个时辰相当于现代几个小时？",
+    "options": [
+      "2 小时",
+      "1 小时",
+      "3 小时",
+      "4 小时"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "一日十二时辰，每时辰合今 2 小时。",
+    "source": "时辰通行对照"
+  },
+  {
+    "id": "c0-0023",
+    "type": "judge",
+    "chapter": "时辰历法",
+    "tags": [
+      "时辰对照",
+      "边界"
+    ],
+    "difficulty": 3,
+    "listKind": "shichen",
+    "listHi": "子时",
+    "stem": "按通行做法，晚上 23 点以后，时辰上已进入「子时」。",
+    "options": [
+      "正确",
+      "错误"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "子时自 23:00 起。至于 23 点后算当天还是次日的子时，命理流派有「早子时／晚子时」之争；小六壬掐算只数时辰，不受此影响。",
+    "source": "时辰通行对照"
+  },
+  {
+    "id": "c0-0024",
+    "type": "single",
+    "chapter": "时辰历法",
+    "tags": [
+      "时辰对照"
+    ],
+    "difficulty": 2,
+    "listKind": "shichen",
+    "listHi": "申时",
+    "stem": "你下午 4 点半给朋友发消息想掐一卦，此时是？",
+    "options": [
+      "申时",
+      "酉时",
+      "未时",
+      "戌时"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "16:30 在 15:00–17:00 之间，为申时。掐算看的是「起念发消息那一刻」的时辰。",
+    "source": "时辰通行对照"
+  }
+]

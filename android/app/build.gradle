@@ -1,0 +1,89 @@
+apply plugin: 'com.android.application'
+
+/*
+ * 签名配置：密码不写进这个文件（本仓库是公开的）。
+ * 取值顺序：
+ *   1) android/keystore.properties（本机私有，已在 .gitignore 里；格式见 docs/BUILD.md）
+ *   2) 环境变量 XLR_KEYSTORE_FILE / XLR_KEYSTORE_PASSWORD / XLR_KEY_ALIAS / XLR_KEY_PASSWORD（CI 用）
+ *   3) 都没有 → release 包回退用 debug 签名，保证任何人 clone 下来都能构建出可安装的 APK
+ *      （debug 签名的包不能覆盖安装官方包，只能卸载重装，见 docs/BUILD.md「签名」）
+ */
+def keystoreProps = new Properties()
+def keystorePropsFile = rootProject.file('keystore.properties')
+if (keystorePropsFile.exists()) {
+    keystorePropsFile.withInputStream { keystoreProps.load(it) }
+}
+def ksFile = keystoreProps['storeFile'] ?: System.getenv('XLR_KEYSTORE_FILE')
+def ksStorePassword = keystoreProps['storePassword'] ?: System.getenv('XLR_KEYSTORE_PASSWORD')
+def ksKeyAlias = keystoreProps['keyAlias'] ?: System.getenv('XLR_KEY_ALIAS')
+def ksKeyPassword = keystoreProps['keyPassword'] ?: System.getenv('XLR_KEY_PASSWORD')
+def hasReleaseSigning = ksFile && ksStorePassword && ksKeyAlias && ksKeyPassword && file(ksFile).exists()
+
+if (!hasReleaseSigning) {
+    logger.lifecycle("[签名] 未找到 release 签名配置（android/keystore.properties 或 XLR_* 环境变量），" +
+            "release 包将使用 debug 签名，仅用于自测，不能覆盖安装官方包。")
+}
+
+android {
+    namespace "com.qiazhi.xiaoliuren"
+    compileSdk rootProject.ext.compileSdkVersion
+    defaultConfig {
+        applicationId "com.qiazhi.xiaoliuren"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 13
+        versionName "2.1"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        aaptOptions {
+             // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
+             // Default: https://android.googlesource.com/platform/frameworks/base/+/282e181b58cf72b6ca770dc7ca5f91f135444502/tools/aapt/AaptAssets.cpp#61
+            ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
+        }
+    }
+    signingConfigs {
+        release {
+            if (hasReleaseSigning) {
+                storeFile file(ksFile)
+                storePassword ksStorePassword
+                keyAlias ksKeyAlias
+                keyPassword ksKeyPassword
+            }
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig hasReleaseSigning ? signingConfigs.release : signingConfigs.debug
+        }
+    }
+}
+
+repositories {
+    flatDir{
+        dirs '../capacitor-cordova-android-plugins/src/main/libs', 'libs'
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation "androidx.appcompat:appcompat:$androidxAppCompatVersion"
+    implementation "androidx.coordinatorlayout:coordinatorlayout:$androidxCoordinatorLayoutVersion"
+    implementation "androidx.core:core-splashscreen:$coreSplashScreenVersion"
+    implementation project(':capacitor-android')
+    testImplementation "junit:junit:$junitVersion"
+    androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
+    implementation project(':capacitor-cordova-android-plugins')
+}
+
+apply from: 'capacitor.build.gradle'
+
+try {
+    def servicesJSON = file('google-services.json')
+    if (servicesJSON.text) {
+        apply plugin: 'com.google.gms.google-services'
+    }
+} catch(Exception e) {
+    logger.info("google-services.json not found, google-services plugin not applied. Push Notifications won't work")
+}

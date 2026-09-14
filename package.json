@@ -1,0 +1,27 @@
+{
+  "name": "xiaoliuren",
+  "version": "2.1.0",
+  "private": true,
+  "description": "掐指小六壬 —— 离线小六壬（诸葛马前课）起课工具 + 教学题库，含 Capacitor Android 壳",
+  "license": "MIT",
+  "scripts": {
+    "sync": "node sync-www.js && npx cap sync android",
+    "sync:www": "node sync-www.js",
+    "build:apk": "node build-apk.js release",
+    "build:apk:debug": "node build-apk.js debug",
+    "test": "node test.js",
+    "smoke": "node smoke-test.js",
+    "bank:build": "node questions/build.js",
+    "icons": "node make-icons.js",
+    "open:android": "npx cap open android"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^6.2.1",
+    "jsdom": "^26.1.0",
+    "sharp": "^0.35.4"
+  },
+  "dependencies": {
+    "@capacitor/android": "^6.2.1",
+    "@capacitor/core": "^6.2.1"
+  }
+}

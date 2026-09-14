@@ -1,0 +1,19 @@
+# 统一换行符：仓库内一律 LF，Windows 上的 .bat 检出为 CRLF
+* text=auto eol=lf
+
+*.bat text eol=crlf
+gradlew text eol=lf
+
+# 二进制文件不要做换行符/编码转换
+*.png binary
+*.jpg binary
+*.webp binary
+*.ico binary
+*.jks binary
+*.keystore binary
+*.apk binary
+*.zip binary
+*.jar binary
+*.ttf binary
+*.woff binary
+*.woff2 binary

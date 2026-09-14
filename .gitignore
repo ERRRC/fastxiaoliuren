@@ -1,0 +1,44 @@
+# ============ 依赖与构建产物（都能由 npm / 脚本重新生成）============
+node_modules/
+# sync-www.js 生成，Capacitor 的 webDir
+www/
+# build-apk.js 输出目录
+dist/
+
+# Android 构建产物与生成文件（Capacitor 默认忽略项）
+android/.gradle/
+android/build/
+android/app/build/
+android/capacitor-cordova-android-plugins/
+android/app/src/main/assets/public/
+android/app/src/main/assets/capacitor.config.json
+android/app/src/main/assets/capacitor.plugins.json
+android/app/src/main/res/xml/config.xml
+android/*.log
+
+# ============ 本机私有配置，绝对不要提交 ============
+# local.properties 里是本机 Android SDK 路径
+android/local.properties
+# keystore.properties 里是签名密码
+android/keystore.properties
+# 发布签名文件
+android/keystore.jks
+android/*.jks
+android/*.keystore
+
+# ============ 安装包：走 GitHub Releases 分发，不进 git 历史 ============
+# 二进制进 git 会永久增加仓库体积（每次改都存一份新的），发布用 Release 附件更合适，见 docs/BUILD.md
+*.apk
+*.aab
+
+# ============ 工作产物 ============
+.workbuddy-backup/
+.workbuddy/
+# upgrade.js 的中间产物
+questions/questions_v2.json
+
+# ============ 系统垃圾 ============
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp

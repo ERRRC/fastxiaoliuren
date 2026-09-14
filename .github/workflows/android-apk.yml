@@ -1,0 +1,97 @@
+name: Build APK
+
+# 打 tag（v*）→ 构建并自动发布到该 tag 的 Release
+# 手动触发（Actions 页 Run workflow）→ 只构建，产物在 Artifacts 里，不发 Release
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'   # 必须 17：Gradle 8.2.1 / AGP 8.2.1 不支持 21+
+          cache: gradle
+
+      - name: 安装依赖
+        run: npm ci
+
+      - name: 跑测试（引擎锚点 + jsdom 冒烟）
+        run: |
+          node test.js
+          node smoke-test.js
+
+      - name: 同步网页资源到 Android 工程
+        run: |
+          node sync-www.js
+          npx cap sync android
+
+      - name: 准备签名（未配置 Secrets 时跳过，改用 debug 签名）
+        id: signing
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          if [ -n "$KEYSTORE_BASE64" ]; then
+            printf '%s' "$KEYSTORE_BASE64" | base64 -d > android/keystore.jks
+            {
+              echo "storeFile=../keystore.jks"
+              echo "storePassword=$KEYSTORE_PASSWORD"
+              echo "keyAlias=$KEY_ALIAS"
+              echo "keyPassword=$KEY_PASSWORD"
+            } > android/keystore.properties
+            echo "signed=true" >> "$GITHUB_OUTPUT"
+            echo "已载入发布签名（KEYSTORE_BASE64）"
+          else
+            echo "signed=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::未配置签名 Secrets，本次输出为 debug 签名，仅供测试，不能覆盖安装官方包（见 docs/BUILD.md 第 4 节）"
+          fi
+
+      - name: 构建 release APK
+        working-directory: android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleRelease --console=plain
+
+      - name: 整理产物
+        run: |
+          VERSION=$(grep -oP 'versionName\s+"\K[^"]+' android/app/build.gradle)
+          mkdir -p dist
+          cp android/app/build/outputs/apk/release/app-release.apk "dist/xiaoliuren-v${VERSION}.apk"
+          ls -lh dist/
+
+      - name: 上传构建产物
+        uses: actions/upload-artifact@v4
+        with:
+          name: apk
+          path: dist/*.apk
+
+      - name: 发布到 Release（仅打 tag 时）
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" dist/*.apk --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" dist/*.apk \
+              --title "$GITHUB_REF_NAME" \
+              --generate-notes
+          fi

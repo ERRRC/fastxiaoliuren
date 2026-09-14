@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>掐指 · 小六壬</title>
+<style>
+  :root{
+    --paper:#f6f1e5; --paper2:#fbf6ea; --ink:#2a251d; --ink2:#6b5d45;
+    --verm:#bf3f2c; --gold:#9c7c3c; --green:#3a7d44; --line:#d8cdb4;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--paper);color:var(--ink);
+    font-family:"KaiTi","STKaiti","BiauKai","DFKai-SB","Noto Serif CJK SC","Source Han Serif SC",serif;
+    font-size:16px;
+    -webkit-tap-highlight-color:transparent;
+    overscroll-behavior-y:contain}
+  .wrap{max-width:980px;margin:0 auto;padding:16px 20px 44px}
+
+  /* 触摸反馈：控件不吃文本选择、不触发双击缩放；正文（口诀/解析/日志）仍可长按复制 */
+  button,.chip,.opt,.node,.topic{touch-action:manipulation;
+    -webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+
+  header{display:flex;align-items:center;gap:14px;padding:8px 0 14px;border-bottom:2px solid var(--ink)}
+  .seal{width:52px;height:52px;background:var(--verm);color:#fff;font-size:30px;flex:none;
+    display:flex;align-items:center;justify-content:center;border-radius:9px;box-shadow:2px 2px 0 var(--gold)}
+  h1{margin:0;font-size:24px;letter-spacing:2px}
+  .sub{margin:3px 0 0;color:var(--ink2);font-size:13px;letter-spacing:1px}
+
+  .tabs{display:flex;gap:8px;margin:16px 0 14px;flex-wrap:wrap}
+  .tabs button{font-family:inherit;font-size:16px;padding:0 18px;min-height:44px;border:1.5px solid var(--ink2);
+    background:transparent;border-radius:20px;cursor:pointer;color:var(--ink2)}
+  .tabs button.active{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+
+  .panel{display:none}
+  .panel.active{display:block}
+  .layout{display:grid;grid-template-columns:440px 1fr;gap:18px}
+
+  /* ================= 窄屏（手机）适配 ================= */
+  @media(max-width:840px){
+    .layout{grid-template-columns:1fr;gap:12px}
+    .wrap{padding:12px 14px 28px}
+    header{gap:10px;padding:4px 0 10px}
+    .seal{width:44px;height:44px;font-size:26px}
+    h1{font-size:20px}
+    /* 起课/课例/学习/速查 四个 Tab 用 4 等分栅格排一行 */
+    .tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:12px 0 10px}
+    .tabs button{padding:0 2px;font-size:15px;letter-spacing:0}
+    /* 掌图限高：让掌图与起课参数尽量同屏，否则动画播放时光点在视口外跳动 */
+    .palm-card{padding:10px}
+    .palm-card svg{width:auto;height:52vh;max-width:100%;margin:0 auto}
+    .log{max-height:180px}
+    .card{padding:12px 14px}
+    .lesson-cell .lc-name{font-size:20px}
+  }
+
+  .card{background:var(--paper2);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:14px}
+  .card h3{margin:0 0 10px;font-size:16px;color:var(--verm);letter-spacing:1px}
+  .note{color:var(--ink2);font-size:12.5px;line-height:1.6;margin:10px 0 0}
+
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0;align-items:center}
+  .chip{border:1px solid var(--ink2);border-radius:14px;padding:2px 11px;font-size:13.5px;color:var(--ink2);white-space:nowrap}
+  .chip.done{border-color:var(--gold);color:var(--gold)}
+  .chip.final{border-color:var(--verm);background:var(--verm);color:#fff}
+  .chip.miss{border-color:var(--verm);color:var(--verm)}
+  .chip.current{border-color:var(--ink);color:var(--ink);border-width:2px;font-weight:bold}
+
+  /* 事类选择：可点 */
+  .topic{border:1.5px solid var(--ink2);border-radius:16px;padding:5px 13px;font-size:14.5px;
+    color:var(--ink2);background:#fff;cursor:pointer;white-space:nowrap;font-family:inherit}
+  .topic.sel{border-color:var(--verm);background:var(--verm);color:#fff}
+  .topic .warnmark{font-size:12px;margin-left:3px}
+
+  .btn{font-family:inherit;font-size:15px;padding:0 18px;min-height:46px;border-radius:8px;border:1.5px solid var(--ink);
+    background:var(--ink);color:var(--paper);cursor:pointer;letter-spacing:1px}
+  .btn.ghost{background:transparent;color:var(--ink)}
+  .btn.small{font-size:14px;padding:0 14px;min-height:40px}
+  .btn.active{background:var(--verm);border-color:var(--verm);color:#fff}
+  .btn:disabled{opacity:.4;cursor:default}
+  .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+
+  .stepper{display:flex;align-items:center;gap:8px;margin:7px 0}
+  .stepper .lab{width:52px;color:var(--ink2)}
+  .stepper button{font-family:inherit;width:44px;height:44px;border-radius:8px;border:1.5px solid var(--ink2);
+    background:#fff;cursor:pointer;font-size:20px;color:var(--ink)}
+  .stepper .val{min-width:64px;text-align:center;font-size:17px}
+  .param-head{font-size:15px;margin-bottom:6px}
+
+  svg{width:100%;height:auto;display:block}
+  .node circle{fill:rgba(255,255,255,.93);stroke:var(--ink2);stroke-width:5;transition:fill .2s,stroke .2s;cursor:pointer}
+  .node text{font-size:28px;fill:var(--ink);font-weight:bold;pointer-events:none}
+  .node.current circle{fill:var(--verm);stroke:var(--verm);animation:pulse 1s infinite}
+  .node.current text{fill:#fff}
+  .node.landed circle{fill:#f3e7c9;stroke:var(--gold)}
+  .node.landed text{fill:var(--gold)}
+  .node.final circle{fill:var(--verm);stroke:var(--gold);stroke-width:9}
+  .node.final text{fill:#fff}
+  .node.good circle{fill:var(--green);stroke:var(--green)}
+  .node.good text{fill:#fff}
+  .node.shake{animation:shake .4s}
+  /* 透明命中圈：手机上可见圆仅约 37px，够不着 44px 触控标准，
+     垫一个大一圈的透明圆专门吃点击，视觉外观不变。必须放在其余 .node 规则之后才能覆盖 */
+  .node circle.hit{fill:transparent;stroke:none}
+  @keyframes pulse{0%,100%{stroke-width:5}50%{stroke-width:12}}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-12px)}75%{transform:translateX(12px)}}
+
+  .log{font-size:14.5px;line-height:1.9;min-height:110px;max-height:250px;overflow:auto}
+  .log .ph{color:var(--verm)}
+  .log .res{color:var(--gold)}
+  .log .dim{color:var(--ink2);font-size:13px}
+
+  .palace-name{font-size:42px;color:var(--verm);line-height:1.2;margin:2px 0 6px}
+  .tags{color:var(--ink2);margin:6px 0}
+  .verse{background:#f3ecd9;padding:10px 12px;border-left:3px solid var(--gold);line-height:1.9;margin:8px 0}
+  dl.topics{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:10px 0 0}
+  dl.topics dt{color:var(--gold);font-weight:bold;white-space:nowrap}
+  dl.topics dd{margin:0}
+  .ok{color:var(--green)}
+  .bad{color:var(--verm)}
+  .mistakes{font-size:15px}
+
+  /* ============ 起课结果页 ============ */
+  .lesson{display:flex;gap:8px;margin:12px 0 4px}
+  .lesson-cell{flex:1;border:1px solid var(--line);border-radius:10px;padding:10px 4px;text-align:center;background:#fff}
+  .lesson-cell .lc-role{font-size:12px;color:var(--ink2)}
+  .lesson-cell .lc-name{font-size:23px;font-weight:bold;color:var(--verm);line-height:1.3;margin:3px 0}
+  .lesson-cell .lc-meta{font-size:11.5px;color:var(--ink2)}
+  .lesson-cell.final{border-color:var(--verm);border-width:2px;background:#fdf6ea}
+
+  .duan{background:#f3ecd9;border-left:3px solid var(--gold);padding:9px 12px;margin:8px 0;line-height:1.85;font-size:14.5px}
+  .duan .duan-who{color:var(--gold);font-weight:bold;margin-right:8px}
+  .duan .duan-verse{font-weight:bold}
+  .duan.miss{background:#f7f3e8;border-left-color:var(--line);color:var(--ink2)}
+  .duan .duan-tag{font-size:11.5px;color:var(--ink2);margin-left:6px}
+  /* 来源徽标（宪法 v2 诚实原则的 UI 化） */
+  .src-badge{display:inline-block;font-size:10.5px;line-height:1;padding:3px 7px;border-radius:9px;
+    margin-left:6px;vertical-align:2px;letter-spacing:.5px;white-space:nowrap}
+  .sb-classic{background:#f3e7c9;color:#7a5f22;border:1px solid var(--gold)}
+  .sb-sorted{background:#e4ecf3;color:#3d617e;border:1px solid #9db6c9}
+  .sb-derive{background:#eceae4;color:var(--ink2);border:1px solid var(--line)}
+  .sb-note{background:#efe9f2;color:#6b4f7e;border:1px solid #c4aed1}
+  .sb-fallback{background:#f7f3e8;color:var(--ink2);border:1px solid var(--line)}
+  /* 结果页折叠深析区 */
+  .fold{margin:9px 0 2px;border:1px dashed var(--line);border-radius:8px;padding:0 10px}
+  .fold summary{cursor:pointer;padding:9px 2px;color:var(--ink2);font-size:14px;user-select:none}
+  .fold[open] summary{color:var(--ink);border-bottom:1px dashed var(--line);margin-bottom:6px}
+  .fold .gist{font-size:13.5px}
+
+  .step{border-left:3px solid var(--gold);padding-left:12px;margin:16px 0}
+  .step h4{margin:0 0 6px;font-size:14.5px;color:var(--verm);font-weight:normal}
+  .step .src{color:var(--ink2);font-size:11.5px;display:block;margin-top:5px}
+  .step .gist{font-size:14.5px;line-height:1.8}
+
+  .warnbar{background:#f7e5e1;border:1px solid var(--verm);border-radius:8px;padding:9px 12px;
+    margin:10px 0;font-size:13.5px;line-height:1.7;color:var(--verm)}
+  .disclaimer{color:var(--ink2);font-size:12px;line-height:1.75;margin-top:14px;
+    padding-top:10px;border-top:1px dashed var(--line)}
+
+  textarea.note-in{width:100%;font-family:inherit;font-size:14.5px;padding:9px 11px;min-height:64px;
+    border:1.5px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);resize:vertical}
+
+  /* ============ 课例 ============ */
+  .case{border:1px solid var(--line);border-radius:10px;padding:10px 13px;margin:10px 0;background:#fff}
+  .case .case-head{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+  .case .case-topic{font-size:16px;color:var(--verm);font-weight:bold}
+  .case .case-time{font-size:12px;color:var(--ink2)}
+  .case .case-palaces{font-size:14.5px;margin-top:5px}
+  .case .case-note{font-size:13.5px;margin-top:6px;line-height:1.7;color:var(--ink2)}
+  .case .case-ops{margin-top:8px}
+
+  /* ============ 学习页子 Tab ============ */
+  .subtabs{margin:0 0 14px}
+  .subtabs button{font-size:15px;padding:0 15px;min-height:40px}
+  .subpanel{display:none}
+  .subpanel.active{display:block}
+
+  .trow{display:flex;gap:10px;align-items:baseline;padding:5px 0;border-bottom:1px dashed var(--line);font-size:14.5px}
+  .trow:last-child{border-bottom:none}
+  .trow .pass{color:var(--green);font-weight:bold;width:16px;flex:none}
+  .trow .fail{color:var(--verm);font-weight:bold;width:16px;flex:none}
+  .trow .tdesc{flex:1}
+  .trow .tval{color:var(--ink2)}
+
+  footer{margin-top:26px;padding-top:12px;border-top:1px solid var(--line);
+    color:var(--ink2);font-size:12.5px;line-height:1.8}
+  .bank-stem{font-size:17px;line-height:1.9;margin:8px 0 12px}
+  .opt{display:block;width:100%;text-align:left;font-family:inherit;font-size:15.5px;
+    padding:12px 14px;min-height:48px;margin:8px 0;border:1.5px solid var(--line);border-radius:10px;
+    background:#fff;cursor:pointer;color:var(--ink)}
+  .opt:hover{border-color:var(--ink2)}
+  .opt.sel{border-color:var(--ink);background:#f3ecd9}
+  .opt.right{border-color:var(--green);background:#e8f1e6}
+  .opt.wrong{border-color:var(--verm);background:#f7e5e1}
+  .opt:disabled{cursor:default}
+  .bank-expl{background:#f3ecd9;border-left:3px solid var(--gold);padding:10px 12px;
+    line-height:1.8;margin:10px 0 0;font-size:14.5px}
+  .qhl{color:var(--verm);font-weight:bold}
+  .qhl-cap{color:var(--ink2)}
+  .stat{font-size:14.5px;line-height:1.9}
+  .stat b{color:var(--verm)}
+  .ref-palace{border:1px solid var(--line);border-radius:10px;margin:10px 0;overflow:hidden}
+  .ref-head{display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;background:#fff}
+  .ref-head .rp-name{font-size:19px;font-weight:bold;color:var(--verm)}
+  .ref-head .rp-luck{font-size:12.5px;border:1px solid var(--ink2);border-radius:10px;padding:1px 8px;color:var(--ink2)}
+  .ref-head .rp-luck.ji{border-color:var(--green);color:var(--green)}
+  .ref-head .rp-luck.xiong{border-color:var(--verm);color:var(--verm)}
+  .ref-head .rp-plain{flex:1;font-size:13.5px;color:var(--ink2)}
+  .ref-head .rp-arrow{color:var(--ink2);transition:transform .2s}
+  .ref-palace.open .rp-arrow{transform:rotate(90deg)}
+  .ref-body{display:none;padding:0 14px 12px;background:#fff}
+  .ref-palace.open .ref-body{display:block}
+  .ref-line{display:flex;gap:12px;padding:6px 0;border-bottom:1px dashed var(--line);font-size:14px;line-height:1.7}
+  .ref-line:last-child{border-bottom:none}
+  .ref-line .rl-verse{color:var(--gold);font-weight:bold;white-space:nowrap;min-width:110px}
+  .ref-line .rl-plain{color:var(--ink)}
+  .ref-line .rl-modern{color:var(--ink2);font-size:13px}
+  table.sc{width:100%;border-collapse:collapse;font-size:14px}
+  table.sc th,table.sc td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:left}
+  table.sc th{color:var(--verm);font-weight:bold}
+  table.sc td.dim{color:var(--ink2);font-size:13px}
+  .hidden{display:none}
+  label.inline{display:flex;align-items:center;gap:6px;font-size:14px;color:var(--ink2);margin-top:8px;cursor:pointer}
+
+  /* Android 返回键提示（配合 MainActivity 的二段退出） */
+  .back-toast{position:fixed;left:50%;bottom:64px;transform:translateX(-50%) translateY(10px);
+    background:var(--ink);color:var(--paper);font-size:14px;padding:8px 18px;border-radius:20px;
+    opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:99}
+  .back-toast.show{opacity:.92;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="seal">掐</div>
+    <div>
+      <h1>掐指 · 小六壬</h1>
+      <p class="sub">起课 · 课例 · 学习　v2.0</p>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button data-tab="divine" class="active">起课</button>
+    <button data-tab="cases">课例</button>
+    <button data-tab="learn">学习</button>
+    <button data-tab="ref">速查卡</button>
+  </nav>
+
+  <!-- ============ 起课 ============ -->
+  <section id="tab-divine" class="panel active">
+    <div class="card">
+      <h3>所问何事</h3>
+      <div class="chips" id="topicChips"></div>
+      <p class="note" id="topicHint" style="margin-top:8px"></p>
+      <p class="note" style="margin-top:4px">
+        课式只由<b>起课时间</b>决定，选事类只决定给你看哪一条断语——同一时刻起课，问什么都是同一个课式。
+      </p>
+    </div>
+
+    <div class="layout">
+      <div>
+        <div class="chips" id="divineChips">
+          <span class="chip">月宫 ·</span><span class="chip">日宫 ·</span><span class="chip">落宫 ·</span>
+        </div>
+        <div class="card palm-card">
+          <svg id="palmDivine" viewBox="100 40 910 1410" aria-label="起课用左手掌">
+            <image href="assets/palm.webp?v=4" x="0" y="0" width="1024" height="1536"/>
+          </svg>
+          <p class="note">掐指路线：食指根（大安）→ 食指尖（留连）→ 中指尖（速喜）→ 无名指尖（赤口）→ 无名指根（小吉）→ 中指根（空亡），循环往复。</p>
+        </div>
+      </div>
+
+      <div>
+        <div class="card">
+          <h3>起课</h3>
+          <div class="param-head" id="divineHead"></div>
+          <p class="note" id="divineSteps" style="margin:2px 0 8px"></p>
+          <div class="stepper">
+            <span class="lab">农历月</span>
+            <button data-step="lm" data-dir="-1">−</button><span class="val" id="mVal"></span><button data-step="lm" data-dir="1">＋</button>
+          </div>
+          <div class="stepper">
+            <span class="lab">农历日</span>
+            <button data-step="ld" data-dir="-1">−</button><span class="val" id="dVal"></span><button data-step="ld" data-dir="1">＋</button>
+          </div>
+          <div class="stepper">
+            <span class="lab">时辰</span>
+            <button data-step="si" data-dir="-1">−</button><span class="val" id="sVal"></span><button data-step="si" data-dir="1">＋</button>
+          </div>
+          <div class="btns">
+            <button class="btn" id="btnDivine">起课</button>
+            <button class="btn ghost" id="btnDivineNow">用当前时刻</button>
+          </div>
+          <div class="btns">
+            <span style="color:var(--ink2);font-size:13.5px;align-self:center">掐算演示：</span>
+            <button class="btn small active" data-dmode="brief">简略</button>
+            <button class="btn ghost small" data-dmode="full">完整</button>
+          </div>
+          <p class="note">日期默认取当前时刻并自动换算农历；手动调整后按手动值起课（内置历法自检，如遇偏差可手动修正）。</p>
+        </div>
+
+        <div class="card hidden" id="divineResult"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 课例 ============ -->
+  <section id="tab-cases" class="panel">
+    <div class="card">
+      <h3>我的课例</h3>
+      <p class="note" style="margin-top:0">在「起课」页出课后点「存入课例」记录，可写一句备忘。数据存在本机，不联网、不上传。</p>
+      <div id="caseList"></div>
+    </div>
+  </section>
+
+  <!-- ============ 学习 ============ -->
+  <section id="tab-learn" class="panel">
+    <nav class="tabs subtabs">
+      <button data-sub="demo" class="active">演示教学</button>
+      <button data-sub="quiz">我来算</button>
+      <button data-sub="bank">题库</button>
+    </nav>
+
+    <!-- ---- 演示教学（原课程演示完整动画） ---- -->
+    <div id="sub-demo" class="subpanel active">
+      <div class="layout">
+        <div>
+          <div class="chips" id="demoChips">
+            <span class="chip">月宫 ·</span><span class="chip">日宫 ·</span><span class="chip">落宫 ·</span>
+          </div>
+          <div class="card palm-card">
+            <svg id="palmDemo" viewBox="100 40 910 1410" aria-label="教学用左手掌">
+              <image href="assets/palm.webp?v=4" x="0" y="0" width="1024" height="1536"/>
+            </svg>
+            <p class="note">完整演示逐格跳步，适合第一次学掐算。熟练后请用「起课」页的简略模式。</p>
+          </div>
+        </div>
+        <div>
+          <div class="card">
+            <h3>演示参数</h3>
+            <div class="param-head" id="demoHead"></div>
+            <p class="note" id="demoSteps" style="margin:2px 0 8px"></p>
+            <div class="stepper">
+              <span class="lab">农历月</span>
+              <button data-step2="lm" data-dir="-1">−</button><span class="val" id="mVal2"></span><button data-step2="lm" data-dir="1">＋</button>
+            </div>
+            <div class="stepper">
+              <span class="lab">农历日</span>
+              <button data-step2="ld" data-dir="-1">−</button><span class="val" id="dVal2"></span><button data-step2="ld" data-dir="1">＋</button>
+            </div>
+            <div class="stepper">
+              <span class="lab">时辰</span>
+              <button data-step2="si" data-dir="-1">−</button><span class="val" id="sVal2"></span><button data-step2="si" data-dir="1">＋</button>
+            </div>
+            <div class="btns">
+              <button class="btn" id="btnDemo">开始演示</button>
+              <button class="btn ghost" id="btnSkip">跳过动画</button>
+              <button class="btn ghost" id="btnNow">用当前时刻</button>
+            </div>
+            <div class="btns">
+              <span style="color:var(--ink2);font-size:13.5px;align-self:center">速度：</span>
+              <button class="btn ghost small" data-speed="slow">慢</button>
+              <button class="btn small active" data-speed="mid">中</button>
+              <button class="btn ghost small" data-speed="fast">快</button>
+            </div>
+            <p class="note">日期默认取当前时刻并自动换算农历；手动调整后按手动值演示（原型内置历法自检，如遇偏差可手动修正，正式版将接入经校验的历法库）。</p>
+            <p class="note" style="margin-top:6px"><b>不止时间起课：</b>报数起课也很常用——心中想着所问之事，随口报三个数，依次当作「月、日、时辰」来数，走法完全相同（数超过 6 就绕圈数）。第一念报几就是几，不能反复挑改。另有骰子、抽签等取数法，规则相通。</p>
+          </div>
+          <div class="card">
+            <h3>掐算过程</h3>
+            <div class="log" id="demoLog"></div>
+          </div>
+          <div class="card hidden" id="demoResult"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ---- 我来算 ---- -->
+    <div id="sub-quiz" class="subpanel">
+      <div class="layout">
+        <div>
+          <div class="chips" id="quizSteps"></div>
+          <div class="card palm-card">
+            <svg id="palmQuiz" viewBox="100 40 910 1410" aria-label="练习用左手掌">
+              <image href="assets/palm.webp?v=4" x="0" y="0" width="1024" height="1536"/>
+            </svg>
+            <label class="inline"><input type="checkbox" id="btnLabels" checked> 显示宫名（去掉勾选即为考核模式）</label>
+          </div>
+        </div>
+        <div>
+          <div class="card">
+            <h3 id="quizTitle"></h3>
+            <p style="line-height:1.9;margin:6px 0">请在<b>自己的左手</b>上按「月上起日、日上起时」实际掐算，再依次点掌图作答：<br>① 月宫（数到当月落在哪）→ ② 日宫 → ③ 时宫（落宫）。</p>
+            <div id="quizFeedback" style="min-height:24px;font-size:15px"></div>
+            <div class="btns">
+              <button class="btn" id="btnQuizToday">今天</button>
+              <button class="btn ghost" id="btnQuizRandom">随机一题</button>
+            </div>
+          </div>
+          <div class="card hidden" id="quizResult"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ---- 题库 ---- -->
+    <div id="sub-bank" class="subpanel">
+      <div class="card">
+        <h3>选择模式</h3>
+        <div class="btns" id="bankModes">
+          <span id="bankChapters" style="display:contents"></span>
+          <button class="btn ghost small" data-bank="gen">起课计算 · 无限</button>
+          <button class="btn ghost small" data-bank="wrong">错题本（<span id="wrongCount">0</span>）</button>
+        </div>
+        <p class="note">错题本规则：答错自动入本，重做连对 2 次移出。「起课计算」由引擎无限生成，教材式中性题干。</p>
+      </div>
+      <div class="layout">
+        <div>
+          <div class="card">
+            <div class="chips" id="bankMeta"></div>
+            <p class="bank-stem" id="bankStem"></p>
+            <div id="bankOptions"></div>
+            <div id="bankFeedback"></div>
+            <div class="btns"><button class="btn hidden" id="btnNext">下一题</button></div>
+          </div>
+        </div>
+        <div>
+          <div class="card"><h3>统计</h3><div id="bankStats" class="stat"></div></div>
+          <div class="card"><h3>错题本</h3><div id="wrongList" class="stat"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 速查卡 ============ -->
+  <section id="tab-ref" class="panel">
+    <div class="card">
+      <h3>六宫速查</h3>
+      <p class="note" style="margin-top:0">点宫名展开：口诀逐句白话 + 现代场景对应。</p>
+      <div id="refPalaces"></div>
+    </div>
+    <div class="card">
+      <h3>流派差异说明</h3>
+      <p class="note" style="margin-top:0">小六壬流传各家，文字与归属小异。本作取流传最广的通行说法之一，已知主要分歧如下：</p>
+      <div class="gist" style="line-height:2">
+        <b>留连五行</b>：本作从通行网络版本作<b>水</b>；部分秘传体系（如「道传小六壬」）作土。本作题库、生克推导均按水计算。<br>
+        <b>六神配宫</b>：本作大安青龙、留连玄武、小吉六合；另有一派小吉配玄武，并以时辰起「活六神」（青龙起子午居大安），本作未采用。<br>
+        <b>口诀文字</b>：各家口诀字句互有出入（如小吉「交关甚是强」一作「婚姻称心怀」），本作按所据通行本收录，不混编。<br>
+        <b>同宫日加时</b>：通行本日加时诀仅收异宫 30 组，日时同宫 6 组为<b>本作补注</b>，已在结果页标注，非古法原文。
+      </div>
+      <p class="note">如你所学的流派与此不同，请以师承为准——本作定位是教学与速查，不做流派裁判。</p>
+    </div>
+    <div class="card">
+      <h3>十二时辰对照</h3>
+      <div id="refShichen"></div>
+    </div>
+    <div class="card">
+      <h3>传统事类 → 现代场景</h3>
+      <div id="refModern"></div>
+      <p class="note">「现代场景」列为教学类比，非古法原文——古人说「求财」，今天对应的是工资、投资、回款这一类事。</p>
+    </div>
+    <div class="card">
+      <h3>历法与起课自检</h3>
+      <div id="testRows"></div>
+      <p class="note">历法数据表来自开源库 solarlunar@2.0.7（MIT），锚点经万年历核对。此自检页会在每次打开时运行，也作为日后替换历法库的回归测试基准。</p>
+    </div>
+  </section>
+
+  <footer>
+    依据：传统六宫版（诸葛马前课通行本）· 宫位指节布局为通行掐法，各派画法小异 · 断语文字各本小异。<br>
+    本应用断语摘自传统小六壬通行本，属民俗文化内容，不构成对任何具体事项的预测或决策建议。
+  </footer>
+</div>
+
+<div id="backToast" class="back-toast">再按一次退出</div>
+
+<script src="vendor/solarlunar.min.js?v=14"></script>
+<script src="engine.js?v=14"></script>
+<script src="palaces.js?v=14"></script>
+<script src="combos.js?v=14"></script>
+<script src="divine.js?v=14"></script>
+<script src="questions.js?v=14"></script>
+<script src="app.js?v=14"></script>
+</body>
+</html>

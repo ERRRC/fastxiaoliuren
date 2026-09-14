@@ -1,0 +1,11 @@
+{
+  "appId": "com.qiazhi.xiaoliuren",
+  "appName": "掐指小六壬",
+  "webDir": "www",
+  "android": {
+    "allowMixedContent": false
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}

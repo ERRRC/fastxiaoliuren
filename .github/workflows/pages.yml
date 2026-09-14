@@ -1,0 +1,50 @@
+name: Deploy Web (GitHub Pages)
+
+# 可选功能：把网页版自动部署到 GitHub Pages，供在线使用（不需要装 APK）。
+# 启用方法：仓库 Settings → Pages → Source 选 “GitHub Actions”。
+# 不想要这个功能：删掉本文件，或把下面的 push 触发注释掉只留手动触发。
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'app.js'
+      - '*.js'
+      - 'assets/**'
+      - 'vendor/**'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 生成 www/
+        run: node sync-www.js
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: www
+
+      - id: deployment
+        uses: actions/deploy-pages@v4
